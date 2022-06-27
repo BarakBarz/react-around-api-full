@@ -1,0 +1,12 @@
+.non-authorized-zone {
+  display: flex;
+  margin: 0 auto;
+  flex-direction: column;
+  max-width: 358px;
+}
+
+@media screen and (max-width: 600px) {
+  .non-authorized-zone {
+    max-width: 260px;
+  }
+}

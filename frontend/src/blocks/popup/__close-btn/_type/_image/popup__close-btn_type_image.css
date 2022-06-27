@@ -1,0 +1,12 @@
+.popup__close-btn_type_image {
+  position: absolute;
+}
+
+@media screen and (max-width: 600px) {
+  .popup__close-btn_type_image {
+    width: 30px;
+    height: 30px;
+    top: -29px;
+    right: -29px;
+  }
+}

@@ -1,8 +1,9 @@
+const { celebrate, Joi } = require('celebrate');
 const Card = require('../models/card');
 
 const getCards = async (req, res) => {
   try {
-    const cards = await Card.find({}); // readFile starts from Root Directory
+    const cards = await Card.find({});
 
     res.send(cards);
   } catch (error) {

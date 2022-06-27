@@ -3,7 +3,11 @@ const User = require('../models/user');
 const bcrypt = require('bcrypt');
 
 const jwt = require('jsonwebtoken');
-const { NotFoundError, BadRequestError } = require('../errors/errorHandler');
+const {
+  NotFoundError,
+  BadRequestError,
+  ConflictError,
+} = require('../errors/errorHandler');
 
 const getUsers = async (req, res) => {
   try {
@@ -41,7 +45,7 @@ const createUser = async (req, res) => {
   try {
     const doesEmailExist = await User.findOne({ email });
     if (doesEmailExist) {
-      return new Error('A user with this email already exist');
+      return new ConflictError('A user with this email already exist');
     }
     const hashedPassword = await bcrypt.hash(password, SALT);
     if (hashedPassword) {
@@ -52,6 +56,11 @@ const createUser = async (req, res) => {
         email,
         password: hashedPassword,
       });
+
+      if (!newUser) {
+        return new ConflictError('A user with this email already exist');
+      }
+      res.status(201).send(newUser);
     }
   } catch (error) {
     if (error.name === 'ValidationError') {
