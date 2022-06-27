@@ -1,0 +1,36 @@
+{
+  "name": "around-express",
+  "version": "1.0.0",
+  "description": "`/data` — JSON files to temporarily emulate database integration.",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "dev": "nodemon app.js",
+    "lint": "npx eslint ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/BarakB1991/around-express.git"
+  },
+  "author": "Barak Barzilay",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/BarakB1991/around-express/issues"
+  },
+  "homepage": "https://github.com/BarakB1991/around-express#readme",
+  "devDependencies": {
+    "eslint": "^8.15.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-plugin-import": "^2.26.0"
+  },
+  "dependencies": {
+    "bcrypt": "^5.0.1",
+    "body-parser": "^1.20.0",
+    "express": "^4.18.1",
+    "helmet": "^5.0.2",
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "^6.3.5",
+    "nodemon": "^2.0.16",
+    "validator": "^13.7.0"
+  }
+}
