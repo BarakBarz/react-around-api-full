@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react';
 
 class Api extends React.Component {
   constructor(props) {
@@ -21,10 +21,10 @@ class Api extends React.Component {
 
   setUserInfo(userDetails) {
     return fetch(`${this._url}/users/me`, {
-      method: "PATCH",
+      method: 'PATCH',
       headers: {
         authorization: this._token,
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
       },
       body: JSON.stringify(userDetails),
     }).then((res) => this._getResponseData(res));
@@ -32,10 +32,10 @@ class Api extends React.Component {
 
   addNewCard(card) {
     return fetch(`${this._url}/cards`, {
-      method: "POST",
+      method: 'POST',
       headers: {
         authorization: this._token,
-        "content-type": "application/json",
+        'content-type': 'application/json',
       },
       body: JSON.stringify(card),
     }).then((res) => this._getResponseData(res));
@@ -43,10 +43,10 @@ class Api extends React.Component {
 
   removeUserCard = (cardId) => {
     return fetch(`${this._url}/cards/${cardId}`, {
-      method: "DELETE",
+      method: 'DELETE',
       headers: {
         authorization: this._token,
-        "content-type": "application/json",
+        'content-type': 'application/json',
       },
     }).then((res) => this._getResponseData(res));
   };
@@ -61,30 +61,30 @@ class Api extends React.Component {
 
   addLike = (cardId) => {
     return fetch(`${this._url}/cards/likes/${cardId}`, {
-      method: "PUT",
+      method: 'PUT',
       headers: {
         authorization: this._token,
-        "content-type": "application/json",
+        'content-type': 'application/json',
       },
     }).then((res) => this._getResponseData(res));
   };
 
   removeLike = (cardId) => {
     return fetch(`${this._url}/cards/likes/${cardId}`, {
-      method: "DELETE",
+      method: 'DELETE',
       headers: {
         authorization: this._token,
-        "content-type": "application/json",
+        'content-type': 'application/json',
       },
     }).then((res) => this._getResponseData(res));
   };
 
   setUserAvatar = (avatar) => {
     return fetch(`${this._url}/users/me/avatar`, {
-      method: "PATCH",
+      method: 'PATCH',
       headers: {
         authorization: this._token,
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
       },
       body: JSON.stringify(avatar),
     }).then((res) => this._getResponseData(res));
@@ -99,8 +99,9 @@ class Api extends React.Component {
 }
 
 const api = new Api({
-  baseUrl: "https://around.nomoreparties.co/v1/group-12",
-  token: "c785e696-84a9-4aca-b3d2-750b2694b444",
+  baseUrl: 'https://localhost:3000',
+  token: 'c785e696-84a9-4aca-b3d2-750b2694b444',
 });
 
 export default api;
+

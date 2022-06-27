@@ -14,9 +14,6 @@ const userSchema = new mongoose.Schema({
     maxlength: 30,
     default: 'Jacques Cousteau',
   },
-  id: {
-    type: String,
-  },
   about: {
     type: String,
     required: true,
@@ -76,7 +73,9 @@ userSchema.statics.findUserByCredentials = function findUserByCredentials(
       });
     })
 
-    .catch(next);
+    .catch((e) => {
+      next(e);
+    });
 };
 
 module.exports = mongoose.model('user', userSchema);

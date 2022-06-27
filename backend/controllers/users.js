@@ -3,11 +3,13 @@ const User = require('../models/user');
 const bcrypt = require('bcrypt');
 
 const jwt = require('jsonwebtoken');
+
 const {
   NotFoundError,
   BadRequestError,
   ConflictError,
 } = require('../errors/errorHandler');
+const { SALT } = require('../utils/constants');
 
 const getUsers = async (req, res) => {
   try {
@@ -22,30 +24,33 @@ const getUsers = async (req, res) => {
 const getUserById = async (req, res) => {
   try {
     const user = await User.findOne({ _id: req.params.userId }).orFail(() => {
-      const error = new Error('ivalid data');
+      const error = new Error('Invalid data');
       error.statusCode = 400;
 
       throw error;
     });
 
     res.send(user);
+    return;
   } catch (error) {
+    console.log(1, error.name);
     if (error.name === 'DocumentNotFoundError') {
-      res.status(404).send({ message: 'User does not exist' });
+      return res.status(404).send({ message: 'User does not exist' });
     } else {
       console.log('Error happened in getUserById', error);
-      res.status(500).send({ message: 'Something went wrong' });
+      return res.status(500).send({ message: 'Something went wrong' });
     }
   }
 };
 
-const createUser = async (req, res) => {
+const createUser = async (req, res, next) => {
   const { name, about, avatar, email, password } = req.body;
 
   try {
     const doesEmailExist = await User.findOne({ email });
     if (doesEmailExist) {
-      return new ConflictError('A user with this email already exist');
+      next(new ConflictError('A user with this email already exist'));
+      return;
     }
     const hashedPassword = await bcrypt.hash(password, SALT);
     if (hashedPassword) {
@@ -60,7 +65,14 @@ const createUser = async (req, res) => {
       if (!newUser) {
         return new ConflictError('A user with this email already exist');
       }
-      res.status(201).send(newUser);
+      const { _id } = newUser;
+      res.status(201).send({
+        _id,
+        name: newUser.name,
+        about: newUser.about,
+        avatar: newUser.avatar,
+        email,
+      });
     }
   } catch (error) {
     if (error.name === 'ValidationError') {
@@ -143,11 +155,15 @@ const login = (req, res) => {
 
   return User.findUserByCredentials(email, password)
     .then((user) => {
+      console.log(1);
       const token = jwt.sign({ _id: user._id }, SALT, { expiresIn: '7d' });
 
       res.send({ token });
     })
-    .catch(next);
+    .catch((e) => {
+      console.log(e);
+      next(e);
+    });
 };
 
 module.exports = {

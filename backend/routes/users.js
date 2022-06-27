@@ -1,8 +1,8 @@
-const express = require('express');
-
 const { celebrate, Joi } = require('celebrate');
 
-const validator = require('validator');
+const express = require('express');
+
+const validate = require('validator');
 
 const router = express.Router();
 const {
@@ -33,7 +33,7 @@ router.get(
   '/users/:userId',
   celebrate({
     params: Joi.object().keys({
-      id: Joi.string().required().alphanum().length(24).hex(),
+      userId: Joi.string().required().alphanum().length(24).hex(),
     }),
   }),
   getUserById

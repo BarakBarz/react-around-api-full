@@ -20,7 +20,7 @@
     "predeploy": "npm run build",
     "deploy": "gh-pages -d build"
   },
-  "homepage": "https://BarakB1991.github.io/around-react",
+  "homepage": "https://BarakB1991.github.io",
   "eslintConfig": {
     "extends": [
       "react-app",
@@ -44,3 +44,4 @@
     "typescript": "^4.7.3"
   }
 }
+

@@ -36,6 +36,7 @@ function App() {
   useEffect(() => {
     // Check token available on client and validity
     const token = localStorage.getItem('token');
+    console.log(token);
     if (token) {
       auth
         .checkToken(token)
@@ -94,9 +95,7 @@ function App() {
     api
       .removeUserCard(card._id)
       .then(() => {
-        const newCards = cards.filter(
-          (currentCard) => currentCard._id !== card._id
-        );
+        const newCards = cards.filter((currentCard) => currentCard._id !== card._id);
         setCards(newCards);
       })
       .catch((err) => {
@@ -109,13 +108,7 @@ function App() {
 
     api
       .changeLikeCardStatus(card._id, !isLiked)
-      .then((newCard) =>
-        setCards((state) =>
-          state.map((currentCard) =>
-            currentCard._id === card._id ? newCard : currentCard
-          )
-        )
-      )
+      .then((newCard) => setCards((state) => state.map((currentCard) => (currentCard._id === card._id ? newCard : currentCard))))
       .catch((err) => {
         console.log(`Error: ${err}`);
       });
@@ -212,16 +205,8 @@ function App() {
   return (
     <CurrentUserContext.Provider value={currentUser}>
       <div className="wrapper">
-        <InfoToolTip
-          onClose={closeAllPopups}
-          isRegisterSuccess={isRegistered}
-          isOpen={isInfoToolTipOpen}
-        />
-        <Header
-          userData={values}
-          isLoggedIn={isLoggedIn}
-          onClick={handleLogout}
-        />
+        <InfoToolTip onClose={closeAllPopups} isRegisterSuccess={isRegistered} isOpen={isInfoToolTipOpen} />
+        <Header userData={values} isLoggedIn={isLoggedIn} onClick={handleLogout} />
         <Switch>
           <Route path="/signin">
             <Login onSubmit={handleLoginClick} />
@@ -241,28 +226,10 @@ function App() {
               onCardDelete={handleCardDelete}
             />
             <Footer />
-            <EditProfilePopup
-              onUpdateUser={handleUpdateUser}
-              onClose={closeAllPopups}
-              isOpen={isEditProfileOpen}
-            ></EditProfilePopup>
-            <AddPlacePopup
-              onAddPlaceSubmit={handleAddCard}
-              onClose={closeAllPopups}
-              isOpen={isAddPlaceOpen}
-            ></AddPlacePopup>
-            <EditAvatarPopup
-              onUpdateAvatar={handleUpdateAvatar}
-              onClose={closeAllPopups}
-              isOpen={isEditAvatarOpen}
-            ></EditAvatarPopup>
-            <PopupWithForm
-              isOpen={isConfirmationOpen}
-              onClose={closeAllPopups}
-              name="confirm"
-              title="Are you sure?"
-              buttonText="Yes"
-            ></PopupWithForm>
+            <EditProfilePopup onUpdateUser={handleUpdateUser} onClose={closeAllPopups} isOpen={isEditProfileOpen}></EditProfilePopup>
+            <AddPlacePopup onAddPlaceSubmit={handleAddCard} onClose={closeAllPopups} isOpen={isAddPlaceOpen}></AddPlacePopup>
+            <EditAvatarPopup onUpdateAvatar={handleUpdateAvatar} onClose={closeAllPopups} isOpen={isEditAvatarOpen}></EditAvatarPopup>
+            <PopupWithForm isOpen={isConfirmationOpen} onClose={closeAllPopups} name="confirm" title="Are you sure?" buttonText="Yes"></PopupWithForm>
             <ImagePopup onClose={closeAllPopups} card={selectedCard} />
           </ProtectedRoute>
         </Switch>
