@@ -32,15 +32,16 @@ function App() {
   });
   const [isRegistered, setIsRegistered] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [userToken, setUserToken] = useState(localStorage.getItem('token'));
 
+  // Check token available validity
   useEffect(() => {
-    // Check token available on client and validity
-    const token = localStorage.getItem('token');
-    if (token) {
+    if (userToken) {
       auth
-        .checkToken(token)
+        .checkToken(userToken)
         .then((res) => {
-          setValues(res.data.email);
+          setValues(res.email);
+
           setIsLoggedIn(true);
           history.push('/');
         })
@@ -49,25 +50,25 @@ function App() {
           setIsLoggedIn(false);
         });
     }
-  }, []);
+  }, [isLoggedIn]);
 
   useEffect(() => {
     api
-      .getUserData()
+      .getUserData(userToken)
       .then((userData) => {
         setCurrentUser(userData);
       })
       .catch((err) => console.log(`Error: ${err}`));
-  }, []);
+  }, [isLoggedIn]);
 
   useEffect(() => {
     api
-      .getInitialCards()
+      .getInitialCards(userToken)
       .then((cards) => {
         setCards(cards);
       })
       .catch((err) => console.log(`Error: ${err}`));
-  }, []);
+  }, [isLoggedIn]);
 
   const closeAllPopups = () => {
     setIsEditAvatarOpen(false);
@@ -92,7 +93,7 @@ function App() {
 
   function handleCardDelete(card) {
     api
-      .removeUserCard(card._id)
+      .removeUserCard(card._id, userToken)
       .then(() => {
         const newCards = cards.filter((currentCard) => currentCard._id !== card._id);
         setCards(newCards);
@@ -106,7 +107,7 @@ function App() {
     const isLiked = card.likes.some((user) => user._id === currentUser._id);
 
     api
-      .changeLikeCardStatus(card._id, !isLiked)
+      .changeLikeCardStatus(card._id, !isLiked, userToken)
       .then((newCard) => setCards((state) => state.map((currentCard) => (currentCard._id === card._id ? newCard : currentCard))))
       .catch((err) => {
         console.log(`Error: ${err}`);
@@ -114,8 +115,10 @@ function App() {
   }
 
   const handleUpdateUser = (data) => {
+    console.log(data);
+    const { name, about } = data;
     api
-      .setUserInfo(data)
+      .setUserInfo(name, about, userToken)
       .then((updatedUser) => {
         setCurrentUser(updatedUser);
         closeAllPopups();
@@ -125,7 +128,7 @@ function App() {
 
   const handleUpdateAvatar = (avatar) => {
     api
-      .setUserAvatar(avatar)
+      .setUserAvatar(avatar, userToken)
       .then((updatedAvatar) => {
         setCurrentUser(updatedAvatar);
         closeAllPopups();
@@ -135,7 +138,7 @@ function App() {
 
   const handleAddCard = (card) => {
     api
-      .addNewCard(card)
+      .addNewCard(card, userToken)
       .then((newCard) => {
         setCards([newCard, ...cards]);
         closeAllPopups();
@@ -182,6 +185,7 @@ function App() {
       .authorize({ values })
       .then((data) => {
         if (data.token) {
+          setUserToken(data.token);
           setIsLoggedIn(true);
           setValues(values.email);
           localStorage.setItem('token', data.token);
@@ -197,6 +201,7 @@ function App() {
   const handleLogout = () => {
     localStorage.removeItem('token');
     setValues('');
+    setUserToken('');
     setIsLoggedIn(false);
     history.push('/signin');
   };

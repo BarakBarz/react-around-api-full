@@ -32,8 +32,8 @@ app.post('/signup', createUser);
 
 app.use(auth);
 
-app.use('/', usersRouter);
-app.use('/', cardsRouter);
+app.use('/users', usersRouter);
+app.use('/cards', cardsRouter);
 
 app.use('/', (req, res) => {
   res.status(404).send({ message: 'Requested resource not found' });

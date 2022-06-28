@@ -2,7 +2,7 @@ const { celebrate, Joi } = require('celebrate');
 const express = require('express');
 
 const router = express.Router();
-
+const { isURLValid } = require('../utils/constants');
 const {
   getCards,
   createCard,
@@ -11,19 +11,19 @@ const {
   unlikeCard,
 } = require('../controllers/cards');
 
-router.get('/cards', getCards);
+router.get('', getCards);
 router.post(
-  '/cards',
+  '',
   celebrate({
-    params: Joi.object().keys({
+    body: Joi.object().keys({
       name: Joi.string().required().min(2).max(30),
-      about: Joi.string().required().min(2).max(30),
+      link: Joi.string().required().required(isURLValid),
     }),
   }),
   createCard
 );
-router.delete('/cards/:cardId', deleteCard);
-router.put('/cards/:cardId/likes', likeCard);
-router.delete('/cards/:cardId/likes', unlikeCard);
+router.delete('/:cardId', deleteCard);
+router.put('/:cardId/likes', likeCard);
+router.delete('/:cardId/likes', unlikeCard);
 
 module.exports = router;

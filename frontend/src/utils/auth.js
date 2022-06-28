@@ -23,11 +23,15 @@ export const authorize = ({ values }) => {
 };
 
 export const checkToken = (token) => {
+  if (!token) {
+    throw new Error('Invalid Token');
+  }
+
   return fetch(`${BASE_URL}/users/me`, {
     method: 'GET',
     headers: {
-      'Content-Type': 'application/json',
       Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json',
     },
   }).then(isResOk);
 };

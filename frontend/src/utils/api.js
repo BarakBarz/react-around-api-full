@@ -7,45 +7,48 @@ class Api extends React.Component {
     this._token = props.token;
   }
 
-  getInitialCards() {
-    return fetch(`${this._url}/cards`, {
-      headers: { authorization: this._token },
-    }).then((res) => this._getResponseData(res));
-  }
-
-  getUserData() {
+  getUserData(token) {
     return fetch(`${this._url}/users/me`, {
-      headers: { authorization: this._token },
+      headers: { authorization: `Bearer ${token}` },
     }).then((res) => this._getResponseData(res));
   }
 
-  setUserInfo(userDetails) {
+  setUserInfo(name, about, token) {
     return fetch(`${this._url}/users/me`, {
       method: 'PATCH',
       headers: {
-        authorization: this._token,
+        authorization: `Bearer ${token}`,
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(userDetails),
+      body: JSON.stringify({
+        name: name,
+        about: about,
+      }),
     }).then((res) => this._getResponseData(res));
   }
 
-  addNewCard(card) {
+  getInitialCards(token) {
+    return fetch(`${this._url}/cards`, {
+      headers: { authorization: `Bearer ${token}` },
+    }).then((res) => this._getResponseData(res));
+  }
+
+  addNewCard(card, token) {
     return fetch(`${this._url}/cards`, {
       method: 'POST',
       headers: {
-        authorization: this._token,
+        authorization: `Bearer ${token}`,
         'content-type': 'application/json',
       },
       body: JSON.stringify(card),
     }).then((res) => this._getResponseData(res));
   }
 
-  removeUserCard = (cardId) => {
+  removeUserCard = (cardId, token) => {
     return fetch(`${this._url}/cards/${cardId}`, {
       method: 'DELETE',
       headers: {
-        authorization: this._token,
+        authorization: `Bearer ${token}`,
         'content-type': 'application/json',
       },
     }).then((res) => this._getResponseData(res));
@@ -59,31 +62,31 @@ class Api extends React.Component {
     }
   }
 
-  addLike = (cardId) => {
+  addLike = (cardId, token) => {
     return fetch(`${this._url}/cards/likes/${cardId}`, {
       method: 'PUT',
       headers: {
-        authorization: this._token,
+        authorization: `Bearer ${token}`,
         'content-type': 'application/json',
       },
     }).then((res) => this._getResponseData(res));
   };
 
-  removeLike = (cardId) => {
+  removeLike = (cardId, token) => {
     return fetch(`${this._url}/cards/likes/${cardId}`, {
       method: 'DELETE',
       headers: {
-        authorization: this._token,
+        authorization: `Bearer ${token}`,
         'content-type': 'application/json',
       },
     }).then((res) => this._getResponseData(res));
   };
 
-  setUserAvatar = (avatar) => {
+  setUserAvatar = (avatar, token) => {
     return fetch(`${this._url}/users/me/avatar`, {
       method: 'PATCH',
       headers: {
-        authorization: this._token,
+        authorization: `Bearer ${token}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify(avatar),
@@ -100,7 +103,6 @@ class Api extends React.Component {
 
 const api = new Api({
   baseUrl: 'http://localhost:3000',
-  token: localStorage.getItem('token'),
 });
 
 export default api;

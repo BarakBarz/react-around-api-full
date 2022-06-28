@@ -82,9 +82,11 @@ const createUser = async (req, res, next) => {
 
 const updateUser = async (req, res, next) => {
   const { name, about } = req.body;
+  const { _id } = req.user;
+  console.log(name, about, _id);
   try {
     const updatedUser = await User.findByIdAndUpdate(
-      req.user._id,
+      _id,
       {
         name,
         about,
@@ -92,15 +94,13 @@ const updateUser = async (req, res, next) => {
       { new: true, runValidators: true }
     );
 
-    res.send(updatedUser);
-  } catch (error) {
-    if (error.name === 'ValidationError') {
-      res
-        .status(400)
-        .send({ message: 'User was not updated. Requirements not met' });
-    } else {
-      res.status(500).send({ message: 'Something went wrong' });
+    if (!updatedUser) {
+      throw new NotFoundError('No user with such id');
     }
+
+    res.send(updatedUser);
+  } catch {
+    next();
   }
 };
 
@@ -127,7 +127,6 @@ const updateAvatar = async (req, res, next) => {
 };
 
 const getUserData = (req, res, next) => {
-  console.log('I am getUserData');
   const { _id } = req.user;
   return User.findOne({ _id })
     .then((user) => {

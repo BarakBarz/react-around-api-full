@@ -4,6 +4,7 @@ const { UnauthorizedError } = require('../errors/errorHandler');
 
 const auth = (req, res, next) => {
   const { authorization } = req.headers;
+  console.log(authorization);
   if (!authorization || !authorization.startsWith('Bearer ')) {
     return new UnauthorizedError('Authorization required');
   }
@@ -16,10 +17,7 @@ const auth = (req, res, next) => {
   }
 
   req.user = payload;
-  console.log(
-    'i am the req.user at the end of auth.js + payload after `jwt.verify`: ',
-    req.user
-  );
+  console.log(`payload`, payload);
   next();
 };
 
