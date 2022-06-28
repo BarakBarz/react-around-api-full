@@ -99,8 +99,8 @@ class Api extends React.Component {
 }
 
 const api = new Api({
-  baseUrl: 'https://localhost:3000',
-  token: 'c785e696-84a9-4aca-b3d2-750b2694b444',
+  baseUrl: 'http://localhost:3000',
+  token: localStorage.getItem('token'),
 });
 
 export default api;

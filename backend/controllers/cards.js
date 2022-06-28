@@ -1,7 +1,8 @@
 const { celebrate, Joi } = require('celebrate');
+const { BadRequestError } = require('../errors/errorHandler');
 const Card = require('../models/card');
 
-const getCards = async (req, res) => {
+const getCards = async (req, res, next) => {
   try {
     const cards = await Card.find({});
 
@@ -12,26 +13,28 @@ const getCards = async (req, res) => {
   }
 };
 
-const createCard = async (req, res) => {
+const createCard = async (req, res, next) => {
+  const { _id } = req.user;
   const { name, link } = req.body;
 
   try {
+    const user = User.findById({ _id });
     const newCard = await Card.create({
       name,
       link,
-      owner: req.user._id,
+      owner: user,
     });
+
     res.send(newCard);
   } catch (error) {
     if (error.name === 'ValidationError') {
-      res.status(400).send({ message: 'Invalid User Id' });
-    } else {
-      res.status(500).send({ message: 'Something went wrong' });
+      next(BadRequestError('Invalid User Id'));
+      return;
     }
   }
 };
 
-const deleteCard = async (req, res) => {
+const deleteCard = async (req, res, next) => {
   try {
     const cardById = await Card.findByIdAndRemove({ _id: req.params.cardId });
     if (!cardById) {
@@ -49,7 +52,7 @@ const deleteCard = async (req, res) => {
   }
 };
 
-const likeCard = async (req, res) => {
+const likeCard = async (req, res, next) => {
   console.log(req.user._id);
   try {
     const newLike = await Card.findByIdAndUpdate(
@@ -76,7 +79,7 @@ const likeCard = async (req, res) => {
   }
 };
 
-const unlikeCard = async (req, res) => {
+const unlikeCard = async (req, res, next) => {
   console.log(req.user._id);
   try {
     const newLike = await Card.findByIdAndUpdate(

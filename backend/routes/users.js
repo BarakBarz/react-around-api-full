@@ -12,6 +12,7 @@ const {
   updateUser,
   updateAvatar,
 } = require('../controllers/users');
+const { auth } = require('../middleware/auth');
 
 const isURLValid = (value, helpers) => {
   if (
@@ -22,7 +23,8 @@ const isURLValid = (value, helpers) => {
   ) {
     return value;
   }
-  return helpers.error('string.uri');
+  helpers.error('string.uri');
+  return;
 };
 
 router.get('/users', getUsers);

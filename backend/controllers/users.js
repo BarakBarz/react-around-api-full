@@ -11,7 +11,7 @@ const {
 } = require('../errors/errorHandler');
 const { SALT } = require('../utils/constants');
 
-const getUsers = async (req, res) => {
+const getUsers = async (req, res, next) => {
   try {
     const users = await User.find({});
     res.send(users);
@@ -21,13 +21,10 @@ const getUsers = async (req, res) => {
   }
 };
 
-const getUserById = async (req, res) => {
+const getUserById = async (req, res, next) => {
   try {
     const user = await User.findOne({ _id: req.params.userId }).orFail(() => {
-      const error = new Error('Invalid data');
-      error.statusCode = 400;
-
-      throw error;
+      next(new NotFoundError('User does not exist'));
     });
 
     res.send(user);
@@ -35,7 +32,7 @@ const getUserById = async (req, res) => {
   } catch (error) {
     console.log(1, error.name);
     if (error.name === 'DocumentNotFoundError') {
-      return res.status(404).send({ message: 'User does not exist' });
+      next(new NotFoundError('User does not exist'));
     } else {
       console.log('Error happened in getUserById', error);
       return res.status(500).send({ message: 'Something went wrong' });
@@ -83,7 +80,7 @@ const createUser = async (req, res, next) => {
   }
 };
 
-const updateUser = async (req, res) => {
+const updateUser = async (req, res, next) => {
   const { name, about } = req.body;
   try {
     const updatedUser = await User.findByIdAndUpdate(
@@ -107,7 +104,7 @@ const updateUser = async (req, res) => {
   }
 };
 
-const updateAvatar = async (req, res) => {
+const updateAvatar = async (req, res, next) => {
   const { avatar } = req.body;
 
   try {
@@ -129,9 +126,9 @@ const updateAvatar = async (req, res) => {
   }
 };
 
-const getUserData = (req, res) => {
-  const { _id } = req.body;
-
+const getUserData = (req, res, next) => {
+  console.log('I am getUserData');
+  const { _id } = req.user;
   return User.findOne({ _id })
     .then((user) => {
       if (!user) {
@@ -150,18 +147,20 @@ const getUserData = (req, res) => {
     });
 };
 
-const login = (req, res) => {
+const login = (req, res, next) => {
   const { email, password } = req.body;
-
+  if (!email || !password) {
+    next(new BadRequestError('Please enter email and password'));
+  }
   return User.findUserByCredentials(email, password)
     .then((user) => {
-      console.log(1);
-      const token = jwt.sign({ _id: user._id }, SALT, { expiresIn: '7d' });
-
-      res.send({ token });
+      const token = jwt.sign({ _id: user._id }, 'some-secret-key', {
+        expiresIn: '7d',
+      });
+      console.log('login token received: ', token);
+      res.status(200).send({ token });
     })
     .catch((e) => {
-      console.log(e);
       next(e);
     });
 };

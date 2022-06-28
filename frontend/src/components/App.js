@@ -36,7 +36,6 @@ function App() {
   useEffect(() => {
     // Check token available on client and validity
     const token = localStorage.getItem('token');
-    console.log(token);
     if (token) {
       auth
         .checkToken(token)

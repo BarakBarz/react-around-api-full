@@ -27,13 +27,13 @@ app.use(bodyParser.json());
 app.use(cors());
 app.options('*', cors());
 
-app.use('/', usersRouter);
-app.use('/', cardsRouter);
-
 app.post('/signin', login);
 app.post('/signup', createUser);
 
 app.use(auth);
+
+app.use('/', usersRouter);
+app.use('/', cardsRouter);
 
 app.use('/', (req, res) => {
   res.status(404).send({ message: 'Requested resource not found' });
