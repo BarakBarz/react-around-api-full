@@ -60,7 +60,7 @@ const createUser = async (req, res, next) => {
       });
 
       if (!newUser) {
-        return new ConflictError('A user with this email already exist');
+        throw new ConflictError('A user with this email already exist');
       }
       const { _id } = newUser;
       res.status(201).send({
@@ -71,12 +71,8 @@ const createUser = async (req, res, next) => {
         email,
       });
     }
-  } catch (error) {
-    if (error.name === 'ValidationError') {
-      res.status(400).send({ message: 'User failed to pass validation' });
-    }
-    console.log('Error happened in createUser', error);
-    res.status(500).send({ message: 'Something went wrong' });
+  } catch (err) {
+    next(err);
   }
 };
 

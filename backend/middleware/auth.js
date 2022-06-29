@@ -7,7 +7,7 @@ const auth = (req, res, next) => {
 
   if (!authorization || !authorization.startsWith('Bearer ')) {
     console.log('No Authorization!!!');
-    return new UnauthorizedError('Authorization required');
+    throw new UnauthorizedError('Authorization required');
   }
   const token = authorization.replace('Bearer ', '');
   let payload;
@@ -19,7 +19,7 @@ const auth = (req, res, next) => {
   }
 
   req.user = payload;
-
+  console.log('payload', payload);
   next();
 };
 

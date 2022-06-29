@@ -66,10 +66,11 @@ function App() {
   // Get initial cards
   useEffect(() => {
     if (!isLoggedIn) return;
+
     api
       .getInitialCards(userToken)
-      .then((cards) => {
-        setCards(cards.reverse());
+      .then((resCards) => {
+        setCards(resCards);
       })
       .catch((err) => console.log(`Error: ${err}`));
   }, [isLoggedIn]);
@@ -98,7 +99,8 @@ function App() {
   function handleCardDelete(card) {
     api
       .removeUserCard(card._id, userToken)
-      .then(() => {
+      .then((cards) => {
+        console.log(1222);
         const newCards = cards.filter((currentCard) => currentCard._id !== card._id);
         setCards(newCards);
       })
@@ -108,7 +110,7 @@ function App() {
   }
 
   function handleCardLike(card) {
-    const isLiked = card.likes.some((id) => id === currentUser._id);
+    const isLiked = card.likes.some((user) => user._id === currentUser._id);
 
     api
       .changeLikeCardStatus(card._id, !isLiked, userToken)

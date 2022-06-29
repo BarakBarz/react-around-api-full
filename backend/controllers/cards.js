@@ -4,6 +4,7 @@ const {
   NotFoundError,
   UnauthorizedError,
   ForbiddenError,
+  ConflictError,
 } = require('../errors/errorHandler');
 const Card = require('../models/card');
 const User = require('../models/user');
@@ -30,6 +31,10 @@ const createCard = async (req, res, next) => {
       owner: user,
     });
 
+    if (!newCard) {
+      throw new BadRequestError('Invalid Data');
+    }
+
     res.send(newCard);
   } catch (error) {
     console.log(error.name, error);
@@ -44,26 +49,30 @@ const createCard = async (req, res, next) => {
 
 const deleteCard = async (req, res, next) => {
   const { _id } = req.user;
+
   try {
-    const cardById = await Card.findByIdAndRemove({ _id: req.params.cardId });
+    const cardById = await Card.findByIdAndRemove({
+      _id: req.params.cardId,
+    }).populate(['owner', 'likes']);
 
     if (!cardById) {
       console.log('This error happened in delete card');
-      return next(new NotFoundError('Card Id not found'));
+      throw new NotFoundError('Card Id not found');
     }
     const cardOwnerId = cardById.owner.toHexString();
     if (cardOwnerId !== _id) {
-      return next(new ForbiddenError("Can't delete someone else's card"));
+      throw new ForbiddenError("Can't delete someone else's card");
     }
     console.log(cardById);
-    res.send(cardById);
+    console.log(cardOwnerId);
+
+    res.status(200).send(cardById);
   } catch (error) {
-    console.log(1);
     if (error.name === 'CastError') {
-      console.log('Error happened in deleteCard1', error.name);
+      console.log('Error happened in deleteCard1');
       next(new BadRequestError('Invalid Data'));
     } else {
-      console.log('Error happened in deleteCard2', error);
+      console.log('Error happened in deleteCard2');
       next(error);
     }
   }
@@ -77,12 +86,14 @@ const likeCard = async (req, res, next) => {
       req.params.cardId,
       { $addToSet: { likes: _id } },
       { new: true }
-    ).orFail(() => {
-      const error = new Error('Invalid cardId');
+    )
+      .populate(['owner', 'likes'])
+      .orFail(() => {
+        const error = new Error('Invalid cardId');
 
-      error.statusCode = 400;
-      throw error;
-    });
+        error.statusCode = 400;
+        throw error;
+      });
 
     res.send(newLike);
   } catch (error) {
@@ -103,12 +114,14 @@ const unlikeCard = async (req, res, next) => {
       req.params.cardId,
       { $pull: { likes: req.user._id } },
       { new: true }
-    ).orFail(() => {
-      const error = new Error('Card was not found');
+    )
+      .populate(['owner', 'likes'])
+      .orFail(() => {
+        const error = new Error('Card was not found');
 
-      error.statusCode = 404;
-      throw error;
-    });
+        error.statusCode = 404;
+        throw error;
+      });
 
     res.send(newLike);
   } catch (error) {
