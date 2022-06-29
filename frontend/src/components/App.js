@@ -41,7 +41,6 @@ function App() {
         .checkToken(userToken)
         .then((res) => {
           setValues(res.email);
-
           setIsLoggedIn(true);
           history.push('/');
         })
@@ -52,32 +51,28 @@ function App() {
     }
   }, [isLoggedIn]);
 
+  //Get user data
   useEffect(() => {
+    if (!isLoggedIn) return;
     api
       .getUserData(userToken)
       .then((userData) => {
         setCurrentUser(userData);
+        setValues(userData.email);
       })
       .catch((err) => console.log(`Error: ${err}`));
   }, [isLoggedIn]);
 
+  // Get initial cards
   useEffect(() => {
+    if (!isLoggedIn) return;
     api
       .getInitialCards(userToken)
       .then((cards) => {
-        setCards(cards);
+        setCards(cards.reverse());
       })
       .catch((err) => console.log(`Error: ${err}`));
   }, [isLoggedIn]);
-
-  const closeAllPopups = () => {
-    setIsEditAvatarOpen(false);
-    setIsEditProfileOpen(false);
-    setIsAddPlaceOpen(false);
-    setIsConfirmationOpen(false);
-    setIsInfoToolTipOpen(false);
-    setSelectedCard(null);
-  };
 
   useEffect(() => {
     const closeByEscape = (e) => {
@@ -90,6 +85,15 @@ function App() {
 
     return () => document.removeEventListener('keydown', closeByEscape);
   }, []);
+
+  const closeAllPopups = () => {
+    setIsEditAvatarOpen(false);
+    setIsEditProfileOpen(false);
+    setIsAddPlaceOpen(false);
+    setIsConfirmationOpen(false);
+    setIsInfoToolTipOpen(false);
+    setSelectedCard(null);
+  };
 
   function handleCardDelete(card) {
     api
@@ -104,7 +108,7 @@ function App() {
   }
 
   function handleCardLike(card) {
-    const isLiked = card.likes.some((user) => user._id === currentUser._id);
+    const isLiked = card.likes.some((id) => id === currentUser._id);
 
     api
       .changeLikeCardStatus(card._id, !isLiked, userToken)
@@ -140,10 +144,11 @@ function App() {
     api
       .addNewCard(card, userToken)
       .then((newCard) => {
+        console.log(newCard);
         setCards([newCard, ...cards]);
         closeAllPopups();
       })
-      .catch((err) => console.log(`Error: ${err}`));
+      .catch((err) => console.log(`Error: ${err} errorname:${err.name}`));
   };
 
   const handleEditAvatarClick = () => {
@@ -185,6 +190,7 @@ function App() {
       .authorize({ values })
       .then((data) => {
         if (data.token) {
+          console.log(data);
           setUserToken(data.token);
           setIsLoggedIn(true);
           setValues(values.email);
@@ -202,6 +208,8 @@ function App() {
     localStorage.removeItem('token');
     setValues('');
     setUserToken('');
+    setUserToken('');
+    setCurrentUser({});
     setIsLoggedIn(false);
     history.push('/signin');
   };

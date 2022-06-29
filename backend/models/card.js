@@ -1,4 +1,6 @@
 const mongoose = require('mongoose');
+const validate = require('validator')
+
 
 const cardSchema = new mongoose.Schema({
   name: {

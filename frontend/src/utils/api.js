@@ -54,16 +54,16 @@ class Api extends React.Component {
     }).then((res) => this._getResponseData(res));
   };
 
-  changeLikeCardStatus(cardId, isNotLiked) {
+  changeLikeCardStatus(cardId, isNotLiked, token) {
     if (isNotLiked) {
-      return this.addLike(cardId);
+      return this.addLike(cardId, token);
     } else {
-      return this.removeLike(cardId);
+      return this.removeLike(cardId, token);
     }
   }
 
   addLike = (cardId, token) => {
-    return fetch(`${this._url}/cards/likes/${cardId}`, {
+    return fetch(`${this._url}/cards/${cardId}/likes`, {
       method: 'PUT',
       headers: {
         authorization: `Bearer ${token}`,
@@ -73,7 +73,7 @@ class Api extends React.Component {
   };
 
   removeLike = (cardId, token) => {
-    return fetch(`${this._url}/cards/likes/${cardId}`, {
+    return fetch(`${this._url}/cards/${cardId}/likes`, {
       method: 'DELETE',
       headers: {
         authorization: `Bearer ${token}`,
@@ -95,7 +95,7 @@ class Api extends React.Component {
 
   _getResponseData(res) {
     if (!res.ok) {
-      return Promise.reject(`Error: ${res.status}`);
+      return Promise.reject(`Error status + name: ${res.status} +${res} `);
     }
     return res.json();
   }
