@@ -4,7 +4,6 @@ class Api extends React.Component {
   constructor(props) {
     super(props);
     this._url = props.baseUrl;
-    this._token = props.token;
   }
 
   getUserData(token) {
@@ -95,7 +94,7 @@ class Api extends React.Component {
 
   _getResponseData(res) {
     if (!res.ok) {
-      return Promise.reject(`Error status + name: ${res.status} +${res} `);
+      return Promise.reject(new Error('something Wrong'));
     }
     return res.json();
   }

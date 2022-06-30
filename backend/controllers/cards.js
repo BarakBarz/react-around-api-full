@@ -49,38 +49,34 @@ const createCard = async (req, res, next) => {
 
 const deleteCard = async (req, res, next) => {
   const { _id } = req.user;
+  const { cardId } = req.params;
+  console.log(cardId);
 
   try {
-    const cardById = await Card.findByIdAndRemove({
-      _id: req.params.cardId,
-    }).populate(['owner', 'likes']);
+    const cardById = await Card.findById(cardId);
 
-    if (!cardById) {
-      console.log('This error happened in delete card');
-      throw new NotFoundError('Card Id not found');
-    }
     const cardOwnerId = cardById.owner.toHexString();
+
     if (cardOwnerId !== _id) {
       throw new ForbiddenError("Can't delete someone else's card");
     }
-    console.log(cardById);
-    console.log(cardOwnerId);
+
+    const removeCard = await Card.findByIdAndDelete(cardId);
+
+    if (!removeCard) {
+      throw new Error();
+    }
 
     res.status(200).send(cardById);
-  } catch (error) {
-    if (error.name === 'CastError') {
-      console.log('Error happened in deleteCard1');
-      next(new BadRequestError('Invalid Data'));
-    } else {
-      console.log('Error happened in deleteCard2');
-      next(error);
-    }
+  } catch (err) {
+    console.log(err);
+    next(err);
   }
 };
 
 const likeCard = async (req, res, next) => {
   const { _id } = req.user;
-  console.log('func-likeCard:', req.params.cardId);
+
   try {
     const newLike = await Card.findByIdAndUpdate(
       req.params.cardId,

@@ -19,7 +19,6 @@ const auth = (req, res, next) => {
   }
 
   req.user = payload;
-  console.log('payload', payload);
   next();
 };
 

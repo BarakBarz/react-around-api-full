@@ -4,11 +4,15 @@ const bcrypt = require('bcrypt');
 
 const jwt = require('jsonwebtoken');
 
+const { JWT_SECRET, NODE_ENV } = process.env;
+
 const {
   NotFoundError,
   BadRequestError,
   ConflictError,
+  UnauthorizedError,
 } = require('../errors/errorHandler');
+
 const { SALT } = require('../utils/constants');
 
 const getUsers = async (req, res, next) => {
@@ -46,8 +50,7 @@ const createUser = async (req, res, next) => {
   try {
     const doesEmailExist = await User.findOne({ email });
     if (doesEmailExist) {
-      next(new ConflictError('A user with this email already exist'));
-      return;
+      throw new ConflictError('A user with this email already exist');
     }
     const hashedPassword = await bcrypt.hash(password, SALT);
     if (hashedPassword) {
@@ -79,7 +82,7 @@ const createUser = async (req, res, next) => {
 const updateUser = async (req, res, next) => {
   const { name, about } = req.body;
   const { _id } = req.user;
-  console.log(name, about, _id);
+
   try {
     const updatedUser = await User.findByIdAndUpdate(
       _id,
@@ -95,8 +98,8 @@ const updateUser = async (req, res, next) => {
     }
 
     res.send(updatedUser);
-  } catch {
-    next();
+  } catch (err) {
+    next(err);
   }
 };
 
@@ -111,14 +114,20 @@ const updateAvatar = async (req, res, next) => {
       },
       { new: true, runValidators: true }
     );
-    if (updatedAvatar) res.send(updatedAvatar);
+    if (!updatedAvatar) {
+      throw new NotFoundError('No user with such id');
+    }
+    res.send(updatedAvatar);
   } catch (err) {
     if (err.name === 'ValidationError') {
-      res.status(400).send({ message: 'Link to avatar not valid' });
-    } else {
-      console.log('Error happened on updateAvatar', error);
-      next();
+      next(new BadRequestError('You have submitted invalid data'));
+      return;
+    } else if (err.name === 'CastError') {
+      next(new BadRequestError('You have submitted invalid data'));
+      return;
     }
+
+    next(e);
   }
 };
 
@@ -127,16 +136,14 @@ const getUserData = (req, res, next) => {
   return User.findOne({ _id })
     .then((user) => {
       if (!user) {
-        return Promise.reject(new NotFoundError('User not found'));
+        throw new NotFoundError('User not found');
       }
 
       res.status(200).send(user);
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        return Promise.reject(
-          new BadRequestError('You have submitted invalid data')
-        );
+        next(new BadRequestError('You have submitted invalid data'));
       }
       next(err);
     });
@@ -144,20 +151,33 @@ const getUserData = (req, res, next) => {
 
 const login = (req, res, next) => {
   const { email, password } = req.body;
+
   if (!email || !password) {
-    next(new BadRequestError('Please enter email and password'));
+    throw new BadRequestError('Please enter email and password');
   }
-  return User.findUserByCredentials(email, password)
-    .then((user) => {
-      const token = jwt.sign({ _id: user._id }, 'some-secret-key', {
-        expiresIn: '7d',
-      });
-      console.log('login token received: ', token);
-      res.status(200).send({ token });
+  User.findOne({ email })
+    .select('+password')
+    .orFail(() => {
+      new UnauthorizedError('Incorrect email or password.');
     })
-    .catch((e) => {
-      next(e);
-    });
+    .then((user) => {
+      bcrypt
+        .compare(password, user.password)
+        .then((match) => {
+          if (!match) {
+            console.log('password:', password, 'user.password:', user.password);
+            throw new UnauthorizedError('Incorrect email or password.');
+          }
+          const token = jwt.sign(
+            { _id: user._id },
+            NODE_ENV === 'production' ? JWT_SECRET : 'some-secret-key',
+            { expiresIn: '7d' }
+          );
+          res.send({ token });
+        })
+        .catch(next);
+    })
+    .catch(next);
 };
 
 module.exports = {

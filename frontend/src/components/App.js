@@ -97,16 +97,17 @@ function App() {
   };
 
   function handleCardDelete(card) {
+    const cardToDelete = card;
     api
       .removeUserCard(card._id, userToken)
-      .then((cards) => {
-        console.log(1222);
-        const newCards = cards.filter((currentCard) => currentCard._id !== card._id);
+      .then((res) => {
+        const newCards = cards.filter((currentCard) => currentCard._id !== cardToDelete._id);
         setCards(newCards);
       })
       .catch((err) => {
         console.log(`Error: ${err}`);
-      });
+      })
+      .finally((cards) => console.log(cards));
   }
 
   function handleCardLike(card) {
@@ -192,7 +193,6 @@ function App() {
       .authorize({ values })
       .then((data) => {
         if (data.token) {
-          console.log(data);
           setUserToken(data.token);
           setIsLoggedIn(true);
           setValues(values.email);

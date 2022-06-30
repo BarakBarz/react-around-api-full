@@ -13,10 +13,15 @@ const cors = require('cors');
 
 const helmet = require('helmet');
 
-const usersRouter = require('./routes/users');
-const cardsRouter = require('./routes/cards');
 const { login, createUser } = require('./controllers/users');
 const { auth } = require('./middleware/auth');
+
+const { requestLogger, errorLogger } = require('./middleware/logger');
+
+const centralErrHandler = require('./middleware/entralErrHandler');
+
+const usersRouter = require('./routes/users');
+const cardsRouter = require('./routes/cards');
 
 mongoose.connect('mongodb://localhost:27017/aroundb');
 
@@ -26,6 +31,8 @@ app.use(bodyParser.json());
 
 app.use(cors());
 app.options('*', cors());
+
+app.use(requestLogger);
 
 app.post('/signin', login);
 app.post('/signup', createUser);
@@ -39,18 +46,11 @@ app.use('/', (req, res) => {
   res.status(404).send({ message: 'Requested resource not found' });
 });
 
+app.use(errorLogger);
+
 app.use(errors());
 
-app.use((err, req, res, next) => {
-  if (err.statusCode === undefined) {
-    const { statusCode = 500, message } = err;
-    res.status(statusCode).send({
-      message: statusCode === 500 ? 'An error occured on the server' : message,
-    });
-    return;
-  }
-  res.status(err.statusCode).send({ message: err.message });
-});
+app.use(centralErrHandler);
 
 app.listen(PORT, () => {
   console.log('running on PORT: ', PORT);
