@@ -1,4 +1,5 @@
 const SALT = 10;
+
 const validate = require('validator');
 const isURLValid = (value, helpers) => {
   if (

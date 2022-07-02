@@ -12,7 +12,6 @@ const {
   updateUser,
   updateAvatar,
 } = require('../controllers/users');
-const { auth } = require('../middleware/auth');
 
 router.get('/', getUsers);
 

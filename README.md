@@ -8,5 +8,5 @@ Please add to this readme:
 - a link to repository with the complete React application which uses this API;
 - a link to the website that hosts your API.
 
-- http://barakbarz.students.nomoreparties.sbs/users
+- https://barakbarz.students.nomoreparties.sbs
 
