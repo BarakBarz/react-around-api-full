@@ -1,9 +1,0 @@
-.popup__box_type_info {
-  padding: 60px 0;
-}
-
-@media screen and (max-width: 600px) {
-  .popup__box_type_info {
-    padding: 50px 0;
-  }
-}
