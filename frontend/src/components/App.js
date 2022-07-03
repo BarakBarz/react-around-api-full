@@ -106,8 +106,7 @@ function App() {
       })
       .catch((err) => {
         console.log(`Error: ${err}`);
-      })
-      .finally((cards) => console.log(cards));
+      });
   }
 
   function handleCardLike(card) {
