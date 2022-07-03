@@ -39,6 +39,8 @@ mongoose.connect('mongodb://localhost:27017/aroundb');
 
 app.use(cors());
 app.options('*', cors());
+
+app.use(limiter);
 app.use(bodyParser.json());
 app.use(helmet());
 
@@ -60,6 +62,8 @@ app.use(errorLogger);
 
 app.use(errors());
 app.use(centralErrHandler);
+
+console.log(process.env.NODE_ENV);
 
 if (NODE_ENV !== 'production')
   app.listen(PORT, () => {
