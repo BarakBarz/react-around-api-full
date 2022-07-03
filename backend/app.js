@@ -14,7 +14,7 @@ const helmet = require('helmet');
 
 const rateLimit = require('express-rate-limit');
 
-const { NODE_ENV, JWT_SECRET } = require('./utils/constants');
+const { NODE_ENV } = require('./utils/constants');
 
 const { PORT = 3000 } = process.env;
 
@@ -40,6 +40,7 @@ const limiter = rateLimit({
 mongoose.connect('mongodb://localhost:27017/aroundb');
 
 app.use(limiter);
+
 app.use(cors());
 app.options('*', cors());
 
@@ -65,9 +66,7 @@ app.use(errorLogger);
 app.use(errors());
 app.use(centralErrHandler);
 
-console.log('NODE_ENV: ', process.env.NODE_ENV, 'JWET_SECRET:', JWT_SECRET);
-
-if (NODE_ENV !== 'production')
+if (NODE_ENV !== 'test')
   app.listen(PORT, () => {
     console.log('running on PORT: ', PORT);
   });
