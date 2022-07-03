@@ -14,7 +14,9 @@ const helmet = require('helmet');
 
 const rateLimit = require('express-rate-limit');
 
-const { PORT = 3000, NODE_ENV } = process.env;
+const { NODE_ENV } = require('./utils/constants');
+
+const { PORT = 3000 } = process.env;
 
 const { login, createUser } = require('./controllers/users');
 const { auth } = require('./middleware/auth');

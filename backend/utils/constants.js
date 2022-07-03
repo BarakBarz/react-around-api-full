@@ -1,6 +1,11 @@
+require('dotenv').config();
+
 const SALT = 10;
 
 const validate = require('validator');
+
+const { JWT_SECRET, NODE_ENV } = process.env;
+
 const isURLValid = (value, helpers) => {
   if (
     validate.isURL(value, {
@@ -17,4 +22,6 @@ const isURLValid = (value, helpers) => {
 module.exports = {
   SALT,
   isURLValid,
+  JWT_SECRET,
+  NODE_ENV,
 };

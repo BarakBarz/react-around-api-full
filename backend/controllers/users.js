@@ -4,7 +4,7 @@ const bcrypt = require('bcrypt');
 
 const jwt = require('jsonwebtoken');
 
-const { JWT_SECRET, NODE_ENV } = process.env;
+const { NODE_ENV, JWT_SECRET } = require('../utils/constants');
 
 const {
   NotFoundError,
