@@ -1,4 +1,4 @@
-const BASE_URL = 'http://localhost:3000';
+const BASE_URL = 'https://api.aroundbarak.students.nomoreparties.sbs';
 
 const isResOk = (res) => (res.ok ? res.json() : Promise.reject(`Something went wrong: ${res.status}`));
 
