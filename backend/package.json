@@ -10,14 +10,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/BarakB1991/react-around-api-full.git"
+    "url": "git+https://github.com/BarakB1991/around-express.git"
   },
   "author": "Barak Barzilay",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/BarakB1991/react-around-api-full/issues"
+    "url": "https://github.com/BarakB1991/around-express/issues"
   },
-  "homepage": "https://github.com/BarakB1991/react-around-api-full#readme",
+  "homepage": "https://github.com/BarakB1991/around-express#readme",
   "devDependencies": {
     "eslint": "^8.15.0",
     "eslint-config-airbnb-base": "^15.0.0",
