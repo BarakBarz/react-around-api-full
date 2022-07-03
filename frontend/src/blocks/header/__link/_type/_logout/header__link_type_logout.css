@@ -1,0 +1,9 @@
+.header__link_type_logout {
+  color: #a9a9a9;
+  font-size: 18px;
+  line-height: 1.2;
+}
+
+.header__link_type_logout:visited {
+  color: #a9a9a9;
+}

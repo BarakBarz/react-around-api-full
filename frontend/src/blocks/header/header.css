@@ -1,0 +1,12 @@
+.header {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: start;
+  -ms-flex-pack: start;
+  justify-content: space-between;
+  margin: 0 0 0;
+  padding-top: 48px;
+  border-bottom: 1px solid rgba(84, 84, 84, 0.7);
+}
+

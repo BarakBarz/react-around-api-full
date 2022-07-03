@@ -1,0 +1,8 @@
+.card__info {
+  font-weight: 900;
+  box-sizing: border-box;
+  padding: 22px 15px 28px 21px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}

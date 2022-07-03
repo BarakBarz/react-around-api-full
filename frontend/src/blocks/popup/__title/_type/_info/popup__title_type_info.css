@@ -1,0 +1,14 @@
+.popup__title_type_info {
+  width: 358px;
+
+  white-space: normal;
+  text-align: center;
+  margin: 0 auto;
+}
+
+@media screen and (max-width: 600px) {
+  .popup__ype_info {
+    font-size: 20px;
+    width: 244px;
+  }
+}

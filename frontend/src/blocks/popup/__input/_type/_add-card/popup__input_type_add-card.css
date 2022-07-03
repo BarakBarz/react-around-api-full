@@ -1,0 +1,10 @@
+@media screen and (max-width: 600px) {
+  .popup__input_type_add-card {
+    font-size: 12px;
+  }
+
+  .popup__input_type_add-card:last-of-type {
+    line-height: 1.22;
+    margin-top: 10px;
+  }
+}

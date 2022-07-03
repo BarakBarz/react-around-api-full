@@ -1,0 +1,16 @@
+.non-authorized-zone__link {
+  text-align: center;
+  font-size: 14px;
+  text-decoration: none;
+  margin-bottom: 42px;
+}
+
+.non-authorized-zone__link:visited {
+  color: #fff;
+}
+
+@media screen and (max-width: 600px) {
+  .non-authorized-zone__link {
+    font-size: 12px;
+  }
+}
