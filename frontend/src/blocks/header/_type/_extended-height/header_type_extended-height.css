@@ -1,0 +1,6 @@
+@media screen and (max-width: 600px) {
+  .header_type_extended-height {
+    margin-top: 142px;
+    border-top: 1px solid rgba(84, 84, 84, 0.7);
+  }
+}

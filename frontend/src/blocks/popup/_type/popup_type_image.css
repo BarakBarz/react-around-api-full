@@ -1,6 +1,12 @@
 .popup_type_image {
   max-width: 100vw;
-  max-height: 100vh;
+  max-height: 100%;
   background-repeat: no-repeat;
   background-color: rgba(0, 0, 0, 0.9);
 }
+
+@media screen and (max-width: 600px) {
+  .popup_type_image {
+  }
+}
+

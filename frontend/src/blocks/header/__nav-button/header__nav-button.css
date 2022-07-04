@@ -1,0 +1,20 @@
+.header__nav-button {
+  visibility: hidden;
+  display: block;
+  background-image: url(../../../images/burger-menu.png);
+  box-sizing: border-box;
+  cursor: pointer;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-color: transparent;
+  background-size: contain;
+  padding: 0;
+}
+
+@media screen and (max-width: 600px) {
+  .header__nav-button {
+    visibility: visible;
+    width: 24px;
+    height: 24px;
+  }
+}

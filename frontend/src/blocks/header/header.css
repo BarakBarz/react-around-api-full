@@ -5,8 +5,18 @@
   -webkit-box-pack: start;
   -ms-flex-pack: start;
   justify-content: space-between;
-  margin: 0 0 0;
   padding-top: 48px;
+  padding-bottom: 40px;
   border-bottom: 1px solid rgba(84, 84, 84, 0.7);
+
+  overflow: visible;
+}
+
+@media screen and (max-width: 600px) {
+  .header {
+    padding-top: 28px;
+    padding-left: 30px;
+    padding-right: 30px;
+  }
 }
 
