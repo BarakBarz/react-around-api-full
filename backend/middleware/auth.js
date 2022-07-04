@@ -19,8 +19,7 @@ const auth = (req, res, next) => {
       NODE_ENV === 'production' ? JWT_SECRET : 'some-secret-key'
     );
   } catch (err) {
-    console.log('No payload');
-    next(err);
+    next(new UnauthorizedError('Token is incorrect'));
   }
 
   req.user = payload;
