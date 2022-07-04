@@ -101,7 +101,7 @@ class Api extends React.Component {
 }
 
 const api = new Api({
-  baseUrl: 'https://aroundbarak.students.nomoreparties.sbs',
+  baseUrl: 'https://api.aroundbarak.students.nomoredomainssbs.ru',
 });
 
 export default api;

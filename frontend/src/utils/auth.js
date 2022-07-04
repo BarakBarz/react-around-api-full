@@ -1,4 +1,4 @@
-const BASE_URL = 'https://aroundbarak.students.nomoreparties.sbs';
+const BASE_URL = 'https://api.aroundbarak.students.nomoredomainssbs.ru';
 
 const isResOk = (res) => (res.ok ? res.json() : Promise.reject(`Something went wrong: ${res.status}`));
 
