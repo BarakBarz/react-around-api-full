@@ -26,5 +26,9 @@
     "html-eex",
     "ejs",
     "react"
-  ]
+  ],
+  "emmet.includeLanguages": {
+    "vue-html": "html",
+    "javascript": "javascriptreact"
+  }
 }

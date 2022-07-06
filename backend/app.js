@@ -23,7 +23,7 @@ const { auth } = require('./middleware/auth');
 
 const { requestLogger, errorLogger } = require('./middleware/logger');
 
-const centralErrHandler = require('./middleware/entralErrHandler');
+const centralErrHandler = require('./middleware/centralErrHandler');
 
 const usersRouter = require('./routes/users');
 const cardsRouter = require('./routes/cards');
@@ -39,8 +39,6 @@ const limiter = rateLimit({
 
 mongoose.connect('mongodb://localhost:27017/aroundb');
 
-app.use(limiter);
-
 app.use(cors());
 app.options('*', cors());
 
@@ -48,6 +46,8 @@ app.use(bodyParser.json());
 app.use(helmet());
 
 app.use(requestLogger);
+
+app.use(limiter);
 
 app.get('/crash-test', () => {
   setTimeout(() => {

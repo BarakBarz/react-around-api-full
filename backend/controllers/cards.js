@@ -1,10 +1,9 @@
 const { celebrate, Joi } = require('celebrate');
 const {
   BadRequestError,
+
   NotFoundError,
-  UnauthorizedError,
   ForbiddenError,
-  ConflictError,
 } = require('../errors/errorHandler');
 const Card = require('../models/card');
 const User = require('../models/user');
@@ -36,13 +35,13 @@ const createCard = async (req, res, next) => {
     }
 
     res.send(newCard);
-  } catch (error) {
+  } catch (err) {
     console.log(error.name, error);
     if (error.name === 'ValidationError') {
       next(BadRequestError('Invalid User Id'));
       return;
     } else {
-      next(error);
+      next(err);
     }
   }
 };
@@ -85,21 +84,18 @@ const likeCard = async (req, res, next) => {
     )
       .populate(['owner', 'likes'])
       .orFail(() => {
-        const error = new Error('Invalid cardId');
-
-        error.statusCode = 400;
-        throw error;
+        throw new BadRequestError('Invalid Data');
       });
 
     res.send(newLike);
-  } catch (error) {
+  } catch (err) {
     if (error.name === 'CastError') {
-      res.status(400).send({ message: 'Invalid data' });
+      next(new BadRequestError('Invalid Data'));
     }
     if (error.name === 'DocumentNotFoundError') {
-      res.status(404).send({ message: 'Card was not found' });
+      next(new NotFoundError('Card not found'));
     } else {
-      res.status(500).send({ message: 'An error has occurred on the server' });
+      next(err);
     }
   }
 };
@@ -122,12 +118,12 @@ const unlikeCard = async (req, res, next) => {
     res.send(newLike);
   } catch (error) {
     if (error.name === 'CastError') {
-      res.status(400).send({ message: 'Invalid data' });
+      next(new BadRequestError('Invalid Data'));
     }
     if (error.name === 'DocumentNotFoundError') {
-      res.status(404).send({ message: 'Card was not found' });
+      next(new NotFoundError('Card not found'));
     } else {
-      res.status(500).send({ message: 'An error has occurred on the server' });
+      next(err);
     }
   }
 };

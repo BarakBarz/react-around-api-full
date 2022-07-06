@@ -21,7 +21,7 @@ const getUsers = async (req, res, next) => {
     res.send(users);
   } catch (error) {
     console.log('Error happened in getUsers', error);
-    res.status(500).send({ message: 'Something went wrong' });
+    next(err);
   }
 };
 
@@ -39,7 +39,7 @@ const getUserById = async (req, res, next) => {
       next(new NotFoundError('User does not exist'));
     } else {
       console.log('Error happened in getUserById', error);
-      return res.status(500).send({ message: 'Something went wrong' });
+      next(err);
     }
   }
 };
