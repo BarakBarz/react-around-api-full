@@ -27,6 +27,7 @@ const centralErrHandler = require('./middleware/centralErrHandler');
 
 const usersRouter = require('./routes/users');
 const cardsRouter = require('./routes/cards');
+const { NotFoundError } = require('./errors/errorHandler');
 
 const app = express();
 
@@ -63,8 +64,8 @@ app.use(auth);
 app.use('/users', usersRouter);
 app.use('/cards', cardsRouter);
 
-app.use('/', (req, res) => {
-  res.status(404).send({ message: 'Requested resource not found' });
+app.use('/', (req, res, next) => {
+  next(new NotFoundError('Path not found!'));
 });
 
 app.use(errorLogger);
