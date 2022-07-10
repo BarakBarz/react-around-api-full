@@ -1,5 +1,3 @@
-// require internal server TODO
-
 module.exports = (err, req, res, next) => {
   if (err.statusCode === undefined) {
     const { statusCode = 500, message } = err;

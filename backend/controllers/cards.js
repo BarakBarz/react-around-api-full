@@ -1,10 +1,9 @@
-const { celebrate, Joi } = require('celebrate');
 const {
   BadRequestError,
-
   NotFoundError,
   ForbiddenError,
 } = require('../errors/errorHandler');
+
 const Card = require('../models/card');
 const User = require('../models/user');
 

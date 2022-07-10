@@ -65,6 +65,7 @@ const createUser = async (req, res, next) => {
       if (!newUser) {
         throw new ConflictError('A user with this email already exist');
       }
+
       const { _id } = newUser;
       res.status(201).send({
         _id,

@@ -1,5 +1,5 @@
 {
-  "editor.wordWrapColumn": 90,
+  "editor.wordWrapColumn": 70,
   "[markdown]": {
     "editor.wordWrap": "off"
   },
@@ -30,5 +30,6 @@
   "emmet.includeLanguages": {
     "vue-html": "html",
     "javascript": "javascriptreact"
-  }
+  },
+  "editor.wordWrap": "on"
 }
